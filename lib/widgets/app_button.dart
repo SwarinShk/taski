@@ -9,7 +9,7 @@ class AppButton extends StatelessWidget {
     this.icon,
     required this.label,
     this.backgroundColor = AppColor.buttonBackground,
-    this.childColor = AppColor.white,
+    this.itemColor = AppColor.white,
     this.onPressed,
   });
 
@@ -18,7 +18,7 @@ class AppButton extends StatelessWidget {
   final IconData? icon;
   final String label;
   final Color backgroundColor;
-  final Color childColor;
+  final Color itemColor;
   final void Function()? onPressed;
 
   @override
@@ -36,14 +36,14 @@ class AppButton extends StatelessWidget {
           elevation: 0,
         ),
         icon: icon != null
-            ? Icon(icon, color: childColor, fontWeight: FontWeight.w600)
+            ? Icon(icon, color: itemColor, fontWeight: FontWeight.w600)
             : null,
         label: Text(
           label,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: childColor,
+            color: itemColor,
           ),
         ),
       ),

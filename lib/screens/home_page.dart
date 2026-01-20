@@ -103,7 +103,7 @@ class HomePage extends StatelessWidget {
                         backgroundColor: AppColor.themeColor.withValues(
                           alpha: 0.1,
                         ),
-                        childColor: AppColor.themeColor,
+                        itemColor: AppColor.themeColor,
                         onPressed: () {},
                       ),
                     ],
