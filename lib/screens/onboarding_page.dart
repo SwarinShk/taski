@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taski_app/constants/app_color.dart';
 import 'package:taski_app/constants/storage_constants.dart';
 import 'package:taski_app/screens/login_page.dart';
+import 'package:taski_app/widgets/app_button.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
@@ -27,7 +28,11 @@ class OnboardingPage extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            ElevatedButton(
+            AppButton(
+              label: 'Get Started',
+              itemColor: AppColor.themeColor,
+              backgroundColor: AppColor.white,
+              elevation: 2,
               onPressed: () async {
                 final pref = await SharedPreferences.getInstance();
                 await pref.setBool(StorageConstants.firstTime, false);
@@ -37,14 +42,6 @@ class OnboardingPage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => LoginPage()),
                 );
               },
-              child: Text(
-                'Get Started',
-                style: GoogleFonts.urbanist(
-                  color: AppColor.themeColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
             ),
           ],
         ),

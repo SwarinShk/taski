@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:taski_app/constants/app_color.dart';
-import 'package:taski_app/screens/home_page.dart';
+import 'package:taski_app/screens/dashboard_page.dart';
 import 'package:taski_app/screens/signup_page.dart';
 import 'package:taski_app/widgets/app_button.dart';
 import 'package:taski_app/widgets/app_text_field.dart';
@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => DashboardPage()),
                   );
                 },
               ),

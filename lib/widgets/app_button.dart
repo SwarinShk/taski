@@ -10,6 +10,7 @@ class AppButton extends StatelessWidget {
     required this.label,
     this.backgroundColor = AppColor.buttonBackground,
     this.itemColor = AppColor.white,
+    this.elevation = 0,
     this.onPressed,
   });
 
@@ -19,6 +20,7 @@ class AppButton extends StatelessWidget {
   final String label;
   final Color backgroundColor;
   final Color itemColor;
+  final double elevation;
   final void Function()? onPressed;
 
   @override
@@ -33,7 +35,7 @@ class AppButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          elevation: 0,
+          elevation: elevation,
         ),
         icon: icon != null
             ? Icon(icon, color: itemColor, fontWeight: FontWeight.w600)
