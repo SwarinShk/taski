@@ -5,6 +5,8 @@ import 'package:taski_app/constants/app_color.dart';
 import 'package:taski_app/screens/done_page.dart';
 import 'package:taski_app/screens/home_page.dart';
 import 'package:taski_app/screens/search_page.dart';
+import 'package:taski_app/widgets/custom_app_bar.dart';
+import 'package:taski_app/widgets/task_bottom_sheet.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -31,10 +33,7 @@ class _DashboardPageState extends State<DashboardPage> {
           if (currentIndex == 1) {
             showModalBottomSheet(
               context: context,
-              builder: (context) => SizedBox(
-                width: double.infinity,
-                child: Column(children: [Text('data')]),
-              ),
+              builder: (context) => TaskBottomSheet(),
             );
           }
         },
@@ -63,55 +62,6 @@ class _DashboardPageState extends State<DashboardPage> {
         selectedLabelStyle: GoogleFonts.urbanist(fontWeight: FontWeight.w600),
         unselectedLabelStyle: GoogleFonts.urbanist(fontWeight: FontWeight.w600),
       ),
-    );
-  }
-}
-
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      centerTitle: false,
-      title: Row(
-        children: [
-          Icon(
-            Amicons.vuesax_tick_square_fill,
-            size: 28,
-            color: AppColor.themeColor,
-          ),
-          SizedBox(width: 8),
-          Text(
-            'Taski',
-            style: GoogleFonts.urbanist(
-              color: AppColor.black,
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        Text(
-          'John',
-          style: GoogleFonts.urbanist(
-            color: AppColor.black,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: CircleAvatar(
-            backgroundImage: AssetImage('assets/images/profile_image.png'),
-            radius: 24,
-          ),
-        ),
-      ],
     );
   }
 }
