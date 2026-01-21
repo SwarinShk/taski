@@ -60,9 +60,16 @@ class _AppTextFieldState extends State<AppTextField> {
           fontWeight: FontWeight.w400,
           color: AppColor.hintColor,
         ),
+        errorStyle: GoogleFonts.urbanist(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: AppColor.fireRed,
+        ),
         border: _border(),
         enabledBorder: _border(),
         focusedBorder: _border(width: 1.2, color: widget.focusedBorderColor),
+        errorBorder: _border(width: 1.2, color: AppColor.fireRed),
+        focusedErrorBorder: _border(width: 1.2, color: AppColor.fireRed),
         suffixIcon: widget.obscureText ? _buildVisibilityIcon() : null,
       ),
     );

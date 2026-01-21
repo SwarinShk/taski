@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:taski_app/constants/app_color.dart';
+import 'package:taski_app/utils/tasks.dart';
 import 'package:taski_app/widgets/empty_state.dart';
 import 'package:taski_app/widgets/task_expansion_tile.dart';
 
@@ -12,21 +13,10 @@ class DonePage extends StatefulWidget {
 }
 
 class _DonePageState extends State<DonePage> {
-  final List<TaskItem> tasks = [
-    TaskItem(
-      title: 'Design sign up flow',
-      description:
-          'By the time a prospect arrives at your signup page, in most cases, they\'ve already By the time a prospect arrives at your signup page, in most cases.',
-    ),
-    TaskItem(
-      title: 'Design use case page',
-      description:
-          'By the time a prospect arrives at your signup page, in most cases, they\'ve already By the time a prospect arrives at your signup page, in most cases.',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final completedTasks = tasks.where((task) => task.isCompleted).toList();
+
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
       child: Column(
@@ -44,11 +34,13 @@ class _DonePageState extends State<DonePage> {
                 ),
               ),
               TextButton(
-                onPressed: () {
-                  setState(() {
-                    tasks.removeRange(0, tasks.length);
-                  });
-                },
+                onPressed: completedTasks.isEmpty
+                    ? null
+                    : () {
+                        setState(() {
+                          tasks.removeWhere((task) => task.isCompleted);
+                        });
+                      },
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   minimumSize: Size.zero,
@@ -67,12 +59,12 @@ class _DonePageState extends State<DonePage> {
           ),
           SizedBox(height: 25),
           Expanded(
-            child: tasks.isNotEmpty
+            child: completedTasks.isNotEmpty
                 ? ListView.separated(
-                    itemCount: tasks.length,
+                    itemCount: completedTasks.length,
                     separatorBuilder: (_, _) => SizedBox(height: 15),
                     itemBuilder: (context, index) {
-                      final task = tasks[index];
+                      final task = completedTasks[index];
 
                       return TaskExpansionTile(
                         task: task,
@@ -81,15 +73,10 @@ class _DonePageState extends State<DonePage> {
                             task.isCompleted = val ?? false;
                           });
                         },
-                        onExpansionChanged: (expanded) {
-                          setState(() {
-                            task.isExpanded = expanded;
-                          });
-                        },
                         trailing: IconButton(
                           onPressed: () {
                             setState(() {
-                              tasks.removeAt(index);
+                              tasks.remove(task);
                             });
                           },
                           icon: Icon(

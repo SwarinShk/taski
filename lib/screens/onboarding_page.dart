@@ -6,8 +6,24 @@ import 'package:taski_app/constants/storage_constants.dart';
 import 'package:taski_app/screens/login_page.dart';
 import 'package:taski_app/widgets/app_button.dart';
 
-class OnboardingPage extends StatelessWidget {
+class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
+
+  @override
+  State<OnboardingPage> createState() => _OnboardingPageState();
+}
+
+class _OnboardingPageState extends State<OnboardingPage> {
+  void _onPressed() async {
+    final pref = await SharedPreferences.getInstance();
+    await pref.setBool(StorageConstants.firstTime, false);
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +49,7 @@ class OnboardingPage extends StatelessWidget {
               itemColor: AppColor.themeColor,
               backgroundColor: AppColor.white,
               elevation: 2,
-              onPressed: () async {
-                final pref = await SharedPreferences.getInstance();
-                await pref.setBool(StorageConstants.firstTime, false);
-
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
+              onPressed: _onPressed,
             ),
           ],
         ),

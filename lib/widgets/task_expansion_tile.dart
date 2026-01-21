@@ -2,18 +2,17 @@ import 'package:amicons/amicons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:taski_app/constants/app_color.dart';
+import 'package:taski_app/utils/task_model.dart';
 
 class TaskExpansionTile extends StatelessWidget {
-  final TaskItem task;
+  final TaskModel task;
   final Function(bool?) onToggleComplete;
-  final Function(bool) onExpansionChanged;
   final Widget trailing;
 
   const TaskExpansionTile({
     super.key,
     required this.task,
     required this.onToggleComplete,
-    required this.onExpansionChanged,
     this.trailing = const Icon(Amicons.vuesax_more, color: AppColor.hintColor),
   });
 
@@ -47,7 +46,6 @@ class TaskExpansionTile extends StatelessWidget {
       trailing: trailing,
       tilePadding: const EdgeInsets.only(right: 10),
       childrenPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      onExpansionChanged: onExpansionChanged,
       children: [
         Text(
           task.description,
@@ -60,18 +58,4 @@ class TaskExpansionTile extends StatelessWidget {
       ],
     );
   }
-}
-
-class TaskItem {
-  bool isCompleted;
-  bool isExpanded;
-  final String title;
-  final String description;
-
-  TaskItem({
-    required this.title,
-    required this.description,
-    this.isCompleted = false,
-    this.isExpanded = false,
-  });
 }

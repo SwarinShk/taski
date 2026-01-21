@@ -2,6 +2,7 @@ import 'package:amicons/amicons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:taski_app/constants/app_color.dart';
+import 'package:taski_app/utils/tasks.dart';
 import 'package:taski_app/widgets/app_button.dart';
 import 'package:taski_app/widgets/empty_state.dart';
 import 'package:taski_app/widgets/task_bottom_sheet.dart';
@@ -15,21 +16,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<TaskItem> tasks = [
-    TaskItem(
-      title: 'Design sign up flow',
-      description:
-          'By the time a prospect arrives at your signup page, in most cases, they\'ve already By the time a prospect arrives at your signup page, in most cases.',
-    ),
-    TaskItem(
-      title: 'Design use case page',
-      description:
-          'By the time a prospect arrives at your signup page, in most cases, they\'ve already By the time a prospect arrives at your signup page, in most cases.',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final pendingTasks = tasks.where((t) => !t.isCompleted).toList();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -55,52 +45,58 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(height: 10),
           Text(
-            'Create tasks to achieve more.',
+            pendingTasks.isNotEmpty
+                ? 'You\'ve got ${pendingTasks.length} tasks to do.'
+                : 'Create tasks to achieve more.',
             style: GoogleFonts.urbanist(
               color: AppColor.secondaryColor,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
           ),
+          SizedBox(height: 25),
           Expanded(
-            child: EmptyState(
-              title: 'You have no task listed',
-              child: AppButton(
-                icon: Amicons.vuesax_add,
-                label: 'Create task',
-                itemColor: AppColor.themeColor,
-                backgroundColor: AppColor.themeColor.withValues(alpha: 0.1),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (_) => const TaskBottomSheet(),
-                  );
-                },
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: tasks.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 15),
-              itemBuilder: (context, index) {
-                final task = tasks[index];
+            child: pendingTasks.isNotEmpty
+                ? ListView.separated(
+                    itemCount: pendingTasks.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 15),
+                    itemBuilder: (context, index) {
+                      final task = pendingTasks[index];
 
-                return TaskExpansionTile(
-                  task: task,
-                  onToggleComplete: (val) {
-                    setState(() {
-                      task.isCompleted = val ?? false;
-                    });
-                  },
-                  onExpansionChanged: (expanded) {
-                    setState(() {
-                      task.isExpanded = expanded;
-                    });
-                  },
-                );
-              },
-            ),
+                      return TaskExpansionTile(
+                        task: task,
+                        onToggleComplete: (val) {
+                          setState(() {
+                            task.isCompleted = val ?? false;
+                          });
+                        },
+                      );
+                    },
+                  )
+                : EmptyState(
+                    title: 'You have no task listed',
+                    child: AppButton(
+                      icon: Amicons.vuesax_add,
+                      label: 'Create task',
+                      itemColor: AppColor.themeColor,
+                      backgroundColor: AppColor.themeColor.withValues(
+                        alpha: 0.1,
+                      ),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (_) => TaskBottomSheet(
+                            onSubmit: (task) {
+                              setState(() {
+                                tasks.add(task);
+                              });
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
           ),
         ],
       ),
