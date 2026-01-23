@@ -1,8 +1,9 @@
 import 'package:amicons/amicons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:taski_app/constants/app_color.dart';
-import 'package:taski_app/utils/tasks.dart';
+import 'package:taski_app/provider/task_provider.dart';
 import 'package:taski_app/widgets/app_button.dart';
 import 'package:taski_app/widgets/empty_state.dart';
 import 'package:taski_app/widgets/task_bottom_sheet.dart';
@@ -18,7 +19,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final pendingTasks = tasks.where((t) => !t.isCompleted).toList();
+    final pendingTasks = Provider.of<TaskProvider>(
+      context,
+    ).tasks.where((task) => !task.isCompleted).toList();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -66,9 +69,10 @@ class _HomePageState extends State<HomePage> {
                       return TaskExpansionTile(
                         task: task,
                         onToggleComplete: (val) {
-                          setState(() {
-                            task.isCompleted = val ?? false;
-                          });
+                          Provider.of<TaskProvider>(
+                            context,
+                            listen: false,
+                          ).completeTask(task);
                         },
                       );
                     },
@@ -86,13 +90,7 @@ class _HomePageState extends State<HomePage> {
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
-                          builder: (_) => TaskBottomSheet(
-                            onSubmit: (task) {
-                              setState(() {
-                                tasks.add(task);
-                              });
-                            },
-                          ),
+                          builder: (_) => TaskBottomSheet(),
                         );
                       },
                     ),

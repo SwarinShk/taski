@@ -1,7 +1,8 @@
 import 'package:amicons/amicons.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:taski_app/constants/app_color.dart';
-import 'package:taski_app/utils/tasks.dart';
+import 'package:taski_app/provider/task_provider.dart';
 import 'package:taski_app/widgets/app_text_field.dart';
 import 'package:taski_app/widgets/empty_state.dart';
 import 'package:taski_app/widgets/task_expansion_tile.dart';
@@ -28,19 +29,22 @@ class _SearchPageState extends State<SearchPage> {
           ),
           SizedBox(height: 25),
           Expanded(
-            child: tasks.isNotEmpty
+            child: Provider.of<TaskProvider>(context).tasks.isNotEmpty
                 ? ListView.separated(
-                    itemCount: tasks.length,
+                    itemCount: Provider.of<TaskProvider>(context).tasks.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 15),
                     itemBuilder: (context, index) {
-                      final task = tasks[index];
+                      final task = Provider.of<TaskProvider>(
+                        context,
+                      ).tasks[index];
 
                       return TaskExpansionTile(
                         task: task,
                         onToggleComplete: (val) {
-                          setState(() {
-                            task.isCompleted = val ?? false;
-                          });
+                          Provider.of<TaskProvider>(
+                            context,
+                            listen: false,
+                          ).completeTask(task);
                         },
                       );
                     },

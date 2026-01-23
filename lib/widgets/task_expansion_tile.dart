@@ -2,7 +2,7 @@ import 'package:amicons/amicons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:taski_app/constants/app_color.dart';
-import 'package:taski_app/utils/task_model.dart';
+import 'package:taski_app/models/task_model.dart';
 
 class TaskExpansionTile extends StatelessWidget {
   final TaskModel task;
@@ -19,7 +19,7 @@ class TaskExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      key: PageStorageKey(task.title),
+      key: PageStorageKey(task.id),
       expandedAlignment: Alignment.centerLeft,
       expandedCrossAxisAlignment: CrossAxisAlignment.start,
       backgroundColor: AppColor.borderColor.withValues(alpha: 0.5),

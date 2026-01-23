@@ -5,7 +5,6 @@ import 'package:taski_app/constants/app_color.dart';
 import 'package:taski_app/screens/done_page.dart';
 import 'package:taski_app/screens/home_page.dart';
 import 'package:taski_app/screens/search_page.dart';
-import 'package:taski_app/utils/tasks.dart';
 import 'package:taski_app/widgets/custom_app_bar.dart';
 import 'package:taski_app/widgets/task_bottom_sheet.dart';
 
@@ -21,20 +20,6 @@ class _DashboardPageState extends State<DashboardPage> {
 
   final List screens = const [HomePage(), HomePage(), SearchPage(), DonePage()];
 
-  void _openCreateTaskSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => TaskBottomSheet(
-        onSubmit: (task) {
-          setState(() {
-            tasks.add(task);
-          });
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +32,11 @@ class _DashboardPageState extends State<DashboardPage> {
           setState(() => currentIndex = index);
 
           if (index == 1) {
-            _openCreateTaskSheet();
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (_) => TaskBottomSheet(),
+            );
             return;
           }
         },

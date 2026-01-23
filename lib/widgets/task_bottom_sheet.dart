@@ -1,19 +1,16 @@
 import 'package:amicons/amicons.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:taski_app/constants/app_color.dart';
-import 'package:taski_app/utils/task_model.dart';
+import 'package:taski_app/models/task_model.dart';
+import 'package:taski_app/provider/task_provider.dart';
 import 'package:taski_app/widgets/app_button.dart';
 import 'package:taski_app/widgets/app_text_field.dart';
 
 class TaskBottomSheet extends StatefulWidget {
   final String actionLabel;
-  final void Function(TaskModel task) onSubmit;
 
-  const TaskBottomSheet({
-    super.key,
-    required this.onSubmit,
-    this.actionLabel = 'Create',
-  });
+  const TaskBottomSheet({super.key, this.actionLabel = 'Create'});
 
   @override
   State<TaskBottomSheet> createState() => _TaskBottomSheetState();
@@ -35,11 +32,10 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
     final description = _descriptionController.text.trim();
 
     if (title.isEmpty) return;
-
-    widget.onSubmit(
-      TaskModel(title: title, description: description, isCompleted: false),
-    );
-
+    Provider.of<TaskProvider>(
+      context,
+      listen: false,
+    ).createTask(TaskModel(title: title, description: description));
     Navigator.pop(context);
   }
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:taski_app/constants/app_color.dart';
-import 'package:taski_app/utils/tasks.dart';
+import 'package:taski_app/provider/task_provider.dart';
 import 'package:taski_app/widgets/empty_state.dart';
 import 'package:taski_app/widgets/task_expansion_tile.dart';
 
@@ -15,7 +16,9 @@ class DonePage extends StatefulWidget {
 class _DonePageState extends State<DonePage> {
   @override
   Widget build(BuildContext context) {
-    final completedTasks = tasks.where((task) => task.isCompleted).toList();
+    final completedTasks = Provider.of<TaskProvider>(
+      context,
+    ).tasks.where((task) => task.isCompleted).toList();
 
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
@@ -37,9 +40,10 @@ class _DonePageState extends State<DonePage> {
                 onPressed: completedTasks.isEmpty
                     ? null
                     : () {
-                        setState(() {
-                          tasks.removeWhere((task) => task.isCompleted);
-                        });
+                        Provider.of<TaskProvider>(
+                          context,
+                          listen: false,
+                        ).removeAllTask();
                       },
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
@@ -69,15 +73,17 @@ class _DonePageState extends State<DonePage> {
                       return TaskExpansionTile(
                         task: task,
                         onToggleComplete: (val) {
-                          setState(() {
-                            task.isCompleted = val ?? false;
-                          });
+                          Provider.of<TaskProvider>(
+                            context,
+                            listen: false,
+                          ).completeTask(task);
                         },
                         trailing: IconButton(
                           onPressed: () {
-                            setState(() {
-                              tasks.remove(task);
-                            });
+                            Provider.of<TaskProvider>(
+                              context,
+                              listen: false,
+                            ).removeTask(task);
                           },
                           icon: Icon(
                             Icons.delete_rounded,
