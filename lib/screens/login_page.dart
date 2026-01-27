@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,7 +10,7 @@ import 'package:taski_app/widgets/app_text_field.dart';
 import 'package:taski_app/widgets/labeled_field.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({super.key}); 
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -60,8 +61,8 @@ class _LoginPageState extends State<LoginPage> {
                       if (val == null || val.isEmpty) {
                         return 'Please enter your email';
                       }
-                      if (val.length < 5) {
-                        return 'Email cannot be less than 5 character';
+                      if (!EmailValidator.validate(val)) {
+                        return 'Please enter a valid email address';
                       }
                       return null;
                     },
@@ -78,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (val == null || val.isEmpty) {
                         return 'Please enter your password';
                       }
-                      if (val.length < 7) {
+                      if (val.length <= 6) {
                         return 'Password cannot be less than 6 character';
                       }
                       return null;

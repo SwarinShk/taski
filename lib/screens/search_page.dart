@@ -17,42 +17,41 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-      child: Column(
-        children: [
-          SizedBox(height: 15),
-          AppTextField(
-            prefix: Amicons.vuesax_search_normal,
-            hintText: 'Search city',
-            focusedBorderColor: AppColor.themeColor,
-          ),
-          SizedBox(height: 25),
-          Expanded(
-            child: Provider.of<TaskProvider>(context).tasks.isNotEmpty
-                ? ListView.separated(
-                    itemCount: Provider.of<TaskProvider>(context).tasks.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 15),
-                    itemBuilder: (context, index) {
-                      final task = Provider.of<TaskProvider>(
-                        context,
-                      ).tasks[index];
+    return Consumer<TaskProvider>(
+      builder: (context, provider, child) {
+        return Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              SizedBox(height: 15),
+              AppTextField(
+                prefix: Amicons.vuesax_search_normal,
+                hintText: 'Search city',
+                focusedBorderColor: AppColor.themeColor,
+              ),
+              SizedBox(height: 25),
+              Expanded(
+                child: provider.tasks.isNotEmpty
+                    ? ListView.separated(
+                        itemCount: provider.tasks.length,
+                        separatorBuilder: (_, _) => const SizedBox(height: 15),
+                        itemBuilder: (context, index) {
+                          final task = provider.tasks[index];
 
-                      return TaskExpansionTile(
-                        task: task,
-                        onToggleComplete: (val) {
-                          Provider.of<TaskProvider>(
-                            context,
-                            listen: false,
-                          ).completeTask(task);
+                          return TaskExpansionTile(
+                            task: task,
+                            onToggleComplete: (val) {
+                              provider.completeTask(task.id);
+                            },
+                          );
                         },
-                      );
-                    },
-                  )
-                : EmptyState(title: 'No result found.'),
+                      )
+                    : EmptyState(title: 'No result found.'),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

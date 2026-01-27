@@ -6,102 +6,91 @@ import 'package:taski_app/provider/task_provider.dart';
 import 'package:taski_app/widgets/empty_state.dart';
 import 'package:taski_app/widgets/task_expansion_tile.dart';
 
-class DonePage extends StatefulWidget {
+class DonePage extends StatelessWidget {
   const DonePage({super.key});
 
   @override
-  State<DonePage> createState() => _DonePageState();
-}
-
-class _DonePageState extends State<DonePage> {
-  @override
   Widget build(BuildContext context) {
-    final completedTasks = Provider.of<TaskProvider>(
-      context,
-    ).tasks.where((task) => task.isCompleted).toList();
-
-    return Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-      child: Column(
-        children: [
-          SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: .spaceBetween,
+    return Consumer<TaskProvider>(
+      builder: (context, provider, child) {
+        final completedTasks = provider.tasks
+            .where((task) => task.isCompleted)
+            .toList();
+        return Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+          child: Column(
             children: [
-              Text(
-                'Completed Tasks',
-                style: GoogleFonts.urbanist(
-                  color: AppColor.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              TextButton(
-                onPressed: completedTasks.isEmpty
-                    ? null
-                    : () {
-                        Provider.of<TaskProvider>(
-                          context,
-                          listen: false,
-                        ).removeAllTask();
-                      },
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: Text(
-                  'Delete all',
-                  style: GoogleFonts.urbanist(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: AppColor.fireRed,
+              SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: .spaceBetween,
+                children: [
+                  Text(
+                    'Completed Tasks',
+                    style: GoogleFonts.urbanist(
+                      color: AppColor.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
+                  TextButton(
+                    onPressed: completedTasks.isEmpty
+                        ? null
+                        : () {
+                            provider.removeAllTask();
+                          },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'Delete all',
+                      style: GoogleFonts.urbanist(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppColor.fireRed,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 25),
+              Expanded(
+                child: completedTasks.isNotEmpty
+                    ? ListView.separated(
+                        itemCount: completedTasks.length,
+                        separatorBuilder: (_, _) => SizedBox(height: 15),
+                        itemBuilder: (context, index) {
+                          final task = completedTasks[index];
+
+                          return TaskExpansionTile(
+                            task: task,
+                            onToggleComplete: (val) {
+                              provider.completeTask(task.id);
+                            },
+                            trailing: IconButton(
+                              onPressed: () {
+                                provider.removeTask(task.id);
+                              },
+                              icon: Icon(
+                                Icons.delete_rounded,
+                                color: AppColor.fireRed,
+                              ),
+                              style: IconButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : EmptyState(title: 'No completed task found'),
               ),
             ],
           ),
-          SizedBox(height: 25),
-          Expanded(
-            child: completedTasks.isNotEmpty
-                ? ListView.separated(
-                    itemCount: completedTasks.length,
-                    separatorBuilder: (_, _) => SizedBox(height: 15),
-                    itemBuilder: (context, index) {
-                      final task = completedTasks[index];
-
-                      return TaskExpansionTile(
-                        task: task,
-                        onToggleComplete: (val) {
-                          Provider.of<TaskProvider>(
-                            context,
-                            listen: false,
-                          ).completeTask(task);
-                        },
-                        trailing: IconButton(
-                          onPressed: () {
-                            Provider.of<TaskProvider>(
-                              context,
-                              listen: false,
-                            ).removeTask(task);
-                          },
-                          icon: Icon(
-                            Icons.delete_rounded,
-                            color: AppColor.fireRed,
-                          ),
-                          style: IconButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                : EmptyState(title: 'No completed task found'),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
