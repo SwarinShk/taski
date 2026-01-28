@@ -11,86 +11,81 @@ class DonePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TaskProvider>(
-      builder: (context, provider, child) {
-        final completedTasks = provider.tasks
-            .where((task) => task.isCompleted)
-            .toList();
-        return Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
-          child: Column(
+    final provider = context.watch<TaskProvider>();
+    final completedTasks = provider.completedTasks;
+    return Padding(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 15),
+      child: Column(
+        children: [
+          SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: .spaceBetween,
             children: [
-              SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: .spaceBetween,
-                children: [
-                  Text(
-                    'Completed Tasks',
-                    style: GoogleFonts.urbanist(
-                      color: AppColor.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: completedTasks.isEmpty
-                        ? null
-                        : () {
-                            provider.removeAllTask();
-                          },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Text(
-                      'Delete all',
-                      style: GoogleFonts.urbanist(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: AppColor.fireRed,
-                      ),
-                    ),
-                  ),
-                ],
+              Text(
+                'Completed Tasks',
+                style: GoogleFonts.urbanist(
+                  color: AppColor.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              SizedBox(height: 25),
-              Expanded(
-                child: completedTasks.isNotEmpty
-                    ? ListView.separated(
-                        itemCount: completedTasks.length,
-                        separatorBuilder: (_, _) => SizedBox(height: 15),
-                        itemBuilder: (context, index) {
-                          final task = completedTasks[index];
-
-                          return TaskExpansionTile(
-                            task: task,
-                            onToggleComplete: (val) {
-                              provider.completeTask(task.id);
-                            },
-                            trailing: IconButton(
-                              onPressed: () {
-                                provider.removeTask(task.id);
-                              },
-                              icon: Icon(
-                                Icons.delete_rounded,
-                                color: AppColor.fireRed,
-                              ),
-                              style: IconButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                minimumSize: Size.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    : EmptyState(title: 'No completed task found'),
+              TextButton(
+                onPressed: completedTasks.isEmpty
+                    ? null
+                    : () {
+                        provider.removeAllCompletedTasks();
+                      },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  'Delete all',
+                  style: GoogleFonts.urbanist(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColor.fireRed,
+                  ),
+                ),
               ),
             ],
           ),
-        );
-      },
+          SizedBox(height: 25),
+          Expanded(
+            child: completedTasks.isNotEmpty
+                ? ListView.separated(
+                    itemCount: completedTasks.length,
+                    separatorBuilder: (_, _) => SizedBox(height: 15),
+                    itemBuilder: (context, index) {
+                      final task = completedTasks[index];
+
+                      return TaskExpansionTile(
+                        task: task,
+                        onToggleComplete: (val) {
+                          provider.toggleTaskCompletion(task.id);
+                        },
+                        trailing: IconButton(
+                          onPressed: () {
+                            provider.removeTask(task.id);
+                          },
+                          icon: Icon(
+                            Icons.delete_rounded,
+                            color: AppColor.fireRed,
+                          ),
+                          style: IconButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : EmptyState(title: 'No completed task found'),
+          ),
+        ],
+      ),
     );
   }
 }

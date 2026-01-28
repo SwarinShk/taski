@@ -10,7 +10,7 @@ import 'package:taski_app/widgets/app_text_field.dart';
 import 'package:taski_app/widgets/labeled_field.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key}); 
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -112,14 +112,12 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   label: 'Sign In',
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DashboardPage(),
-                        ),
-                      );
-                    }
+                    // if (_formKey.currentState!.validate()) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => DashboardPage()),
+                    );
+                    // }
                   },
                 ),
                 SizedBox(height: 20),

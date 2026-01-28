@@ -1,8 +1,8 @@
 class TaskModel {
-  int id;
-  String title;
-  String description;
-  bool isCompleted;
+  final int id;
+  final String title;
+  final String description;
+  final bool isCompleted;
 
   TaskModel({
     required this.id,

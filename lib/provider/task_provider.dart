@@ -1,11 +1,29 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:taski_app/models/task_model.dart';
 
 class TaskProvider extends ChangeNotifier {
-  List<TaskModel> tasks = [];
+  final List<TaskModel> allTasks = [];
+
+  String _searchText = '';
+
+  List<TaskModel> get pendingTasks =>
+      allTasks.where((task) => !task.isCompleted).toList();
+
+  List<TaskModel> get completedTasks =>
+      allTasks.where((task) => task.isCompleted).toList();
+
+  List<TaskModel> get filteredTasks {
+    if (_searchText.isEmpty) return [];
+    return allTasks
+        .where(
+          (task) =>
+              task.title.toLowerCase().contains(_searchText.toLowerCase()),
+        )
+        .toList();
+  }
 
   void createTask({required String title, required String description}) {
-    tasks.add(
+    allTasks.add(
       TaskModel(
         id: DateTime.now().millisecondsSinceEpoch,
         title: title,
@@ -16,23 +34,33 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void completeTask(int id) {
-    final index = tasks.indexWhere((task) => task.id == id);
+  void toggleTaskCompletion(int id) {
+    final index = allTasks.indexWhere((task) => task.id == id);
     if (index == -1) return;
 
-    tasks[index] = tasks[index].copyWith(
-      isCompleted: !tasks[index].isCompleted,
+    allTasks[index] = allTasks[index].copyWith(
+      isCompleted: !allTasks[index].isCompleted,
     );
     notifyListeners();
   }
 
   void removeTask(int id) {
-    tasks.removeWhere((task) => task.id == id);
+    allTasks.removeWhere((task) => task.id == id);
     notifyListeners();
   }
 
-  void removeAllTask() {
-    tasks.removeRange(0, tasks.length);
+  void removeAllCompletedTasks() {
+    allTasks.removeWhere((task) => task.isCompleted);
+    notifyListeners();
+  }
+
+  void search(String text) {
+    _searchText = text;
+    notifyListeners();
+  }
+
+  void clearSearch() {
+    _searchText = '';
     notifyListeners();
   }
 }

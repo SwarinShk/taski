@@ -18,30 +18,44 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   int currentIndex = 0;
 
-  final List screens = const [HomePage(), HomePage(), SearchPage(), DonePage()];
+  final List<Widget> screens = [
+    HomePage(),
+    HomePage(),
+    SearchPage(),
+    DonePage(),
+  ];
+
+  void _onTabTapped(int index) {
+    if (index == 1) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (_) => const TaskBottomSheet(),
+      );
+      return;
+    }
+
+    setState(() => currentIndex = index);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
-      body: SafeArea(child: screens[currentIndex]),
+      appBar: const CustomAppBar(),
+      body: SafeArea(
+        child: IndexedStack(index: currentIndex, children: screens),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
-        onTap: (index) {
-          setState(() => currentIndex = index);
-
-          if (index == 1) {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (_) => TaskBottomSheet(),
-            );
-            return;
-          }
-        },
-
-        items: [
+        onTap: _onTabTapped,
+        selectedItemColor: AppColor.themeColor,
+        unselectedItemColor: AppColor.hintColor,
+        selectedFontSize: 14,
+        unselectedFontSize: 14,
+        selectedLabelStyle: GoogleFonts.urbanist(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: GoogleFonts.urbanist(fontWeight: FontWeight.w600),
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Amicons.vuesax_task_square),
             label: 'Todo',
@@ -59,12 +73,6 @@ class _DashboardPageState extends State<DashboardPage> {
             label: 'Done',
           ),
         ],
-        selectedItemColor: AppColor.themeColor,
-        unselectedItemColor: AppColor.hintColor,
-        selectedFontSize: 14,
-        unselectedFontSize: 14,
-        selectedLabelStyle: GoogleFonts.urbanist(fontWeight: FontWeight.w600),
-        unselectedLabelStyle: GoogleFonts.urbanist(fontWeight: FontWeight.w600),
       ),
     );
   }
