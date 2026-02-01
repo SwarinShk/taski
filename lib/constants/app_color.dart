@@ -8,6 +8,7 @@ class AppColor {
   static const Color white = Color(0xffffffff);
   static const Color fireRed = Color(0xffFF5E5E);
   static const Color paleWhite = Color(0xffF5F7F9);
+  static const Color green = Colors.green;
 
   static const Color fillColor = Color(0xffF7FBFF);
   static const Color hintColor = Color(0xff8897AD);
