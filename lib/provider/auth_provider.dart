@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:taski_app/constants/app_color.dart';
+import 'package:taski_app/models/user_model.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -9,7 +11,13 @@ class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  // bool _isLoggedIn = false;
+  bool get isLoggedIn => _auth.currentUser != null;
+
+  UserModel? userData;
+
   Future<bool> signUpUser({
+    required String name,
     required String email,
     required String password,
   }) async {
@@ -27,6 +35,15 @@ class AuthProvider extends ChangeNotifier {
         textColor: AppColor.white,
         backgroundColor: AppColor.green,
       );
+
+      userData = UserModel(name: name, email: email);
+
+      var userDataAsJson = userData!.toJson();
+
+      await FirebaseFirestore.instance
+          .collection('allUsers')
+          .doc(email)
+          .set(userDataAsJson);
 
       return true;
     } on FirebaseAuthException catch (e) {
@@ -73,6 +90,13 @@ class AuthProvider extends ChangeNotifier {
         backgroundColor: AppColor.green,
       );
 
+      var userDataAsJson = await FirebaseFirestore.instance
+          .collection('allUsers')
+          .doc(email)
+          .get();
+      if (userDataAsJson.exists) {
+        userData = UserModel.fromJson(userDataAsJson as Map<String, dynamic>);
+      }
       return true;
     } on FirebaseAuthException catch (e) {
       String message = 'Something went wrong';
@@ -106,5 +130,9 @@ class AuthProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> signOut() async {
+    await _auth.signOut();
   }
 }

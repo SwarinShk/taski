@@ -1,7 +1,10 @@
 import 'package:amicons/amicons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:taski_app/constants/app_color.dart';
+import 'package:taski_app/provider/auth_provider.dart';
+import 'package:taski_app/screens/login_page.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -40,11 +43,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: CircleAvatar(
-            backgroundImage: AssetImage('assets/images/profile_image.png'),
-            radius: 24,
+        GestureDetector(
+          onTap: () {
+            context.read<AuthProvider>().signOut;
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => LoginPage()),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: CircleAvatar(
+              backgroundImage: AssetImage('assets/images/profile_image.png'),
+              radius: 24,
+            ),
           ),
         ),
       ],

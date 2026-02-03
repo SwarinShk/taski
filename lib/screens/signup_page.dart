@@ -31,6 +31,7 @@ class _SignupPageState extends State<SignupPage> {
     final authProvider = context.read<AuthProvider>();
 
     final success = await authProvider.signUpUser(
+      name: _nameController.text,
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
     );

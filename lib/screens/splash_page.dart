@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taski_app/constants/storage_constants.dart';
+import 'package:taski_app/screens/dashboard_page.dart';
 import 'package:taski_app/screens/login_page.dart';
 import 'package:taski_app/screens/onboarding_page.dart';
+import 'package:taski_app/provider/auth_provider.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -16,21 +19,32 @@ class _SplashPageState extends State<SplashPage> {
     final pref = await SharedPreferences.getInstance();
     bool isFirstTime = pref.getBool(StorageConstants.firstTime) ?? true;
 
+    if (!mounted) return;
+    var isLoggedIn = context.read<AuthProvider>().isLoggedIn;
+
     if (isFirstTime) {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => OnboardingPage()),
-        );
-      }
+      // if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => OnboardingPage()),
+      );
+      // }
+      return;
+    } else if (isLoggedIn) {
+      // if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => DashboardPage()),
+      );
+      // }
       return;
     } else {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
-      }
+      // if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+      // }
       return;
     }
   }
