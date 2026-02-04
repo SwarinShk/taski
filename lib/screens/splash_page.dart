@@ -23,28 +23,23 @@ class _SplashPageState extends State<SplashPage> {
     var isLoggedIn = context.read<AuthProvider>().isLoggedIn;
 
     if (isFirstTime) {
-      // if (mounted) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => OnboardingPage()),
       );
-      // }
       return;
     } else if (isLoggedIn) {
-      // if (mounted) {
+      context.read<AuthProvider>().fetchUserData();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => DashboardPage()),
       );
-      // }
       return;
     } else {
-      // if (mounted) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginPage()),
       );
-      // }
       return;
     }
   }

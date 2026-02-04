@@ -1,7 +1,9 @@
 import 'package:amicons/amicons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:taski_app/constants/app_color.dart';
+import 'package:taski_app/provider/task_provider.dart';
 import 'package:taski_app/screens/done_page.dart';
 import 'package:taski_app/screens/home_page.dart';
 import 'package:taski_app/screens/search_page.dart';
@@ -34,8 +36,17 @@ class _DashboardPageState extends State<DashboardPage> {
       );
       return;
     }
-
     setState(() => currentIndex = index);
+  }
+
+  void init() async {
+    context.read<TaskProvider>().fetchAllTask();
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
   }
 
   @override

@@ -30,20 +30,17 @@ class _SignupPageState extends State<SignupPage> {
 
     final authProvider = context.read<AuthProvider>();
 
-    final success = await authProvider.signUpUser(
+    await authProvider.signUpUser(
       name: _nameController.text,
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
     );
 
     if (!mounted) return;
-
-    if (success) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const DashboardPage()),
-      );
-    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const DashboardPage()),
+    );
   }
 
   @override
@@ -142,10 +139,8 @@ class _SignupPageState extends State<SignupPage> {
                     AppButton(
                       height: 52,
                       width: double.infinity,
-                      label: authProvider.isLoading
-                          ? 'Signing Up...'
-                          : 'Sign Up',
-                      onPressed: authProvider.isLoading ? null : _signUp,
+                      label: 'Sign Up',
+                      onPressed: _signUp,
                     ),
                     const SizedBox(height: 20),
                     Center(

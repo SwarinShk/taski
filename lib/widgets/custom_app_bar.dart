@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:taski_app/constants/app_color.dart';
 import 'package:taski_app/provider/auth_provider.dart';
+import 'package:taski_app/provider/task_provider.dart';
 import 'package:taski_app/screens/login_page.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -36,7 +37,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         Text(
-          'John',
+          context.watch<AuthProvider>().userData?.name ?? 'User',
           style: GoogleFonts.urbanist(
             color: AppColor.black,
             fontSize: 20,
@@ -46,6 +47,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         GestureDetector(
           onTap: () {
             context.read<AuthProvider>().signOut;
+            context.read<TaskProvider>().invalidate();
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => LoginPage()),

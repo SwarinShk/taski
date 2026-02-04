@@ -7,132 +7,90 @@ import 'package:taski_app/models/user_model.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-
-  // bool _isLoggedIn = false;
   bool get isLoggedIn => _auth.currentUser != null;
 
   UserModel? userData;
 
-  Future<bool> signUpUser({
+  Future signUpUser({
     required String name,
     required String email,
     required String password,
   }) async {
-    _isLoading = true;
-    notifyListeners();
-
     try {
-      await _auth.createUserWithEmailAndPassword(
+      var userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      if (userCredential.user != null) {
+        userData = UserModel(name: name, email: email);
+        var userDataAsJson = userData!.toJson();
+        await _firestore.collection('allUsers').doc(email).set(userDataAsJson);
+
+        Fluttertoast.showToast(
+          msg: 'Account created successfully',
+          textColor: AppColor.white,
+          backgroundColor: AppColor.green,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      Fluttertoast.showToast(
+        msg: e.message ?? "Something went wrong",
+        textColor: AppColor.white,
+        backgroundColor: AppColor.fireRed,
+      );
+    }
+  }
+
+  Future signInUser({required String email, required String password}) async {
+    try {
+      var userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      Fluttertoast.showToast(
-        msg: 'Account created successfully',
-        textColor: AppColor.white,
-        backgroundColor: AppColor.green,
-      );
+      if (userCredential.user != null) {
+        await fetchUserData();
 
-      userData = UserModel(name: name, email: email);
-
-      var userDataAsJson = userData!.toJson();
-
-      await FirebaseFirestore.instance
-          .collection('allUsers')
-          .doc(email)
-          .set(userDataAsJson);
-
-      return true;
-    } on FirebaseAuthException catch (e) {
-      String message = 'Something went wrong';
-
-      switch (e.code) {
-        case 'email-already-in-use':
-          message = 'This email is already registered. Please log in.';
-          break;
-        case 'weak-password':
-          message = 'Password is too weak.';
-          break;
-        case 'invalid-email':
-          message = 'Invalid email address.';
-          break;
+        Fluttertoast.showToast(
+          msg: 'Signed in successfully',
+          textColor: AppColor.white,
+          backgroundColor: AppColor.green,
+        );
       }
-
+    } on FirebaseAuthException catch (e) {
       Fluttertoast.showToast(
-        msg: message,
+        msg: e.message ?? "Something went wrong",
         textColor: AppColor.white,
         backgroundColor: AppColor.fireRed,
       );
-
-      return false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 
-  Future<bool> signInUser({
-    required String email,
-    required String password,
-  }) async {
-    _isLoading = true;
-    notifyListeners();
-
+  Future fetchUserData() async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-
-      Fluttertoast.showToast(
-        msg: 'Signed in successfully',
-        textColor: AppColor.white,
-        backgroundColor: AppColor.green,
-      );
-
-      var userDataAsJson = await FirebaseFirestore.instance
+      var userDataSnapshot = await _firestore
           .collection('allUsers')
-          .doc(email)
+          .doc(_auth.currentUser!.email)
           .get();
-      if (userDataAsJson.exists) {
-        userData = UserModel.fromJson(userDataAsJson as Map<String, dynamic>);
+      if (userDataSnapshot.exists) {
+        var userDataAsJson = userDataSnapshot.data() as Map<String, dynamic>;
+        userData = UserModel.fromJson(userDataAsJson);
+        notifyListeners();
       }
-      return true;
-    } on FirebaseAuthException catch (e) {
-      String message = 'Something went wrong';
-
-      switch (e.code) {
-        case 'user-not-found':
-          message = 'No account found with this email';
-          break;
-        case 'wrong-password':
-          message = 'Incorrect password';
-          break;
-        case 'invalid-email':
-          message = 'Invalid email address';
-          break;
-        case 'invalid-credential':
-          message = 'Email or password is incorrect';
-          break;
-        case 'user-disabled':
-          message = 'This account has been disabled';
-          break;
-      }
-
+    } catch (e) {
       Fluttertoast.showToast(
-        msg: message,
+        msg: e.toString(),
         textColor: AppColor.white,
         backgroundColor: AppColor.fireRed,
       );
-
-      return false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 
-  Future<void> signOut() async {
+  Future signOut() async {
+    userData = null;
     await _auth.signOut();
+    notifyListeners();
   }
 }

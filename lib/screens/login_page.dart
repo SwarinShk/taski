@@ -29,19 +29,16 @@ class _LoginPageState extends State<LoginPage> {
 
     final authProvider = context.read<AuthProvider>();
 
-    final success = await authProvider.signInUser(
+    await authProvider.signInUser(
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
     );
 
     if (!mounted) return;
-
-    if (success) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const DashboardPage()),
-      );
-    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const DashboardPage()),
+    );
   }
 
   @override
@@ -122,10 +119,8 @@ class _LoginPageState extends State<LoginPage> {
                     AppButton(
                       height: 52,
                       width: double.infinity,
-                      label: authProvider.isLoading
-                          ? 'Signing In...'
-                          : 'Sign In',
-                      onPressed: authProvider.isLoading ? null : _signIn,
+                      label: 'Sign In',
+                      onPressed: _signIn,
                     ),
                     SizedBox(height: 20),
                     Center(
