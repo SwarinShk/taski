@@ -41,6 +41,7 @@ class SearchPage extends StatelessWidget {
                         onToggleComplete: (val) {
                           context.read<TaskProvider>().toggleTaskCompletion(
                             task.id,
+                            task.isCompleted,
                           );
                         },
                       );

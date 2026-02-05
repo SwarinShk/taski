@@ -71,7 +71,7 @@ class _TaskBottomSheetState extends State<TaskBottomSheet> {
                       title: _titleController.text.trim(),
                       description: _descriptionController.text,
                     );
-                    // Navigator.pop(context);
+                    Navigator.pop(context);
                   }
                 },
               ),

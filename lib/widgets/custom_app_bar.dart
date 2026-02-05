@@ -37,7 +37,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         Text(
-          context.watch<AuthProvider>().userData?.name ?? 'User',
+          context.watch<AuthProvider>().userData?.name ?? '',
           style: GoogleFonts.urbanist(
             color: AppColor.black,
             fontSize: 20,

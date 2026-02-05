@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:taski_app/constants/app_color.dart';
 import 'package:taski_app/models/task_model.dart';
 
 class TaskProvider extends ChangeNotifier {
@@ -57,21 +59,42 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleTaskCompletion(int id) {
+  void toggleTaskCompletion(int id, bool currentIndex) async {
     final index = allTasks.indexWhere((task) => task.id == id);
-    if (index == -1) return;
 
-    allTasks[index] = allTasks[index].copyWith(
-      isCompleted: !allTasks[index].isCompleted,
-    );
+    if (index == -1) {
+      Fluttertoast.showToast(
+        msg: "Could not find task",
+        textColor: AppColor.white,
+        backgroundColor: AppColor.fireRed,
+      );
+      return;
+    }
+
+    final original = allTasks[index];
+    allTasks[index] = original.copyWith(isCompleted: !original.isCompleted);
     notifyListeners();
+
+    try {
+      await _firestore.collection('allTasks').doc(id.toString()).update({
+        'isCompleted': !currentIndex,
+      });
+      fetchAllTask();
+    } catch (e) {
+      allTasks[index] = original;
+      Fluttertoast.showToast(
+        msg: "Could not change status",
+        textColor: AppColor.white,
+        backgroundColor: AppColor.fireRed,
+      );
+    } finally {
+      notifyListeners();
+    }
   }
 
   void removeTask(int id) async {
     await _firestore.collection('allTasks').doc(id.toString()).delete();
     fetchAllTask();
-
-    // allTasks.removeWhere((task) => task.id == id);
     notifyListeners();
   }
 
@@ -80,8 +103,6 @@ class TaskProvider extends ChangeNotifier {
       await _firestore.collection('allTasks').doc(task.id.toString()).delete();
     }
     fetchAllTask();
-
-    // allTasks.removeWhere((task) => task.isCompleted);
     notifyListeners();
   }
 

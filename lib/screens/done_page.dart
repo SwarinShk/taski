@@ -63,7 +63,7 @@ class DonePage extends StatelessWidget {
                       return TaskExpansionTile(
                         task: task,
                         onToggleComplete: (val) {
-                          provider.toggleTaskCompletion(task.id);
+                          provider.toggleTaskCompletion(task.id,task.isCompleted);
                         },
                         trailing: IconButton(
                           onPressed: () {

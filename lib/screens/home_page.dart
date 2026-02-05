@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:taski_app/constants/app_color.dart';
+import 'package:taski_app/provider/auth_provider.dart';
 import 'package:taski_app/provider/task_provider.dart';
 import 'package:taski_app/widgets/app_button.dart';
 import 'package:taski_app/widgets/empty_state.dart';
@@ -33,7 +34,7 @@ class HomePage extends StatelessWidget {
               children: [
                 TextSpan(text: 'Welcome, '),
                 TextSpan(
-                  text: 'John',
+                  text: context.watch<AuthProvider>().userData?.name ?? '',
                   style: GoogleFonts.urbanist(color: AppColor.themeColor),
                 ),
                 TextSpan(text: '.'),
@@ -63,7 +64,10 @@ class HomePage extends StatelessWidget {
                       return TaskExpansionTile(
                         task: task,
                         onToggleComplete: (val) {
-                          provider.toggleTaskCompletion(task.id);
+                          provider.toggleTaskCompletion(
+                            task.id,
+                            task.isCompleted,
+                          );
                         },
                       );
                     },
