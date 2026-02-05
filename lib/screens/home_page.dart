@@ -1,4 +1,5 @@
 import 'package:amicons/amicons.dart';
+import 'package:change_case/change_case.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,13 @@ class HomePage extends StatelessWidget {
               children: [
                 TextSpan(text: 'Welcome, '),
                 TextSpan(
-                  text: context.watch<AuthProvider>().userData?.name ?? '',
+                  text:
+                      context
+                          .watch<AuthProvider>()
+                          .userData
+                          ?.name
+                          .toCapitalCase() ??
+                      '',
                   style: GoogleFonts.urbanist(color: AppColor.themeColor),
                 ),
                 TextSpan(text: '.'),

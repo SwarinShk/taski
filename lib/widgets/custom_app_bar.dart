@@ -1,4 +1,5 @@
 import 'package:amicons/amicons.dart';
+import 'package:change_case/change_case.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         Text(
-          context.watch<AuthProvider>().userData?.name ?? '',
+          context.watch<AuthProvider>().userData?.name.toCapitalCase() ?? '',
           style: GoogleFonts.urbanist(
             color: AppColor.black,
             fontSize: 20,
